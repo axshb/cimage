@@ -1,0 +1,8 @@
+### JSON PARSING ###
+comfyui jsons are a DAG. we would have to find the terminal value. most of the time all we care about is what plugs into the ksampler, so we look at that as the sink node, and traverse back. we cannot use conditionals like looking for values, since people can use various custom or different nodes for standard features. we simply just use the data in the json instead of trying to standardize output, as long as the actual items are consistent, the naming doesn't matter. 
+
+### TESTS ###
+need to implement these
+
+### GITHUB CI/CD ###
+probably a good idea
