@@ -13,7 +13,6 @@
         gcc
         cmake
         pkg-config
-        exiv2
       ];
 
       shellHook = ''
