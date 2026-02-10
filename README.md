@@ -42,12 +42,15 @@ File Logic & Execution Flow
 - Metadata Extraction: Once a `tEXt` chunk with the key prompt is found, the raw JSON is handed to `ComfyMetadataExtractor::extract_metadata`.
 
 ### Building
+1. Create a build directory: `mkdir build && cd build`
+2. Configure: `cmake ..`
+3. Compile: `make`
 
-- On nix: `nix develop` then `g++ -O3 src/main.cpp src/comfy_utils.cpp src/png_utils.cpp -o out/cimage`.
-
-- Not on nix: To compile the tool, you'll need a C++ compiler and the `nlohmann/json library`. If you have the headers in your include path, you can build it with: `g++ -O3 main.cpp comfy_utils.cpp -o out/cimage -I ./include`.
+This will produce two binaries: `cimage` (the app) and `unit_tests`.
 
 ### Usage
+Run cimage:
+`./cimage path/to/your/image.png`
 
-Just pass the path to a valid PNG:
-`./out/cimage image_path.png`.
+Run tests:
+`./unit_tests`
