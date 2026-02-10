@@ -11,7 +11,7 @@ void test_png_length() {
 
 int main() {
     test_png_length();
-    // Add more test functions here
+    // to do: add more test functions here
     std::cout << "All tests passed successfully!" << std::endl;
     return 0;
 }
