@@ -29,10 +29,10 @@ void extract_metadata(const std::string& raw_json) {
     try {
         json data = json::parse(raw_json);
         
-        // Buckets for our data
+        // raw data bucks
         std::set<std::string> prompts;
         std::map<std::string, std::string> sampling_settings;
-        std::set<std::string> assets; // Checkpoints and LoRAs
+        std::set<std::string> assets;
 
         for (auto& [id, node] : data.items()) {
             std::string type = node.value("class_type", "");
