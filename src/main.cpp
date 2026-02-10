@@ -19,7 +19,7 @@ https://cplusplus.com/reference/istream/istream/read/
 file.read() expects a pointer to a char in parameter 0
 */
 int main(int argc, char* argv[]) {
-
+    ComfyMetadataExtractor extractor;
     if (argc < 2) {
         std::cerr << "Error parsing arguments. Did you include an image path?" << std::endl;
         return 1;
@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
                 
                 // comfyui uses prompt as the key for the json/graph
                 if (key == "prompt") {
-                    comfy_utils::extract_metadata(value);
+                    extractor.extract_metadata(value);
                 }
             }
             

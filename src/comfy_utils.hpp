@@ -9,6 +9,14 @@
 #include <set>
 #include <map>
 
-namespace comfy_utils {
+class ComfyMetadataExtractor {
+public:
     void extract_metadata(const std::string& raw_json);
-}
+
+private:
+    void crawl_prompts(const std::string& k, const std::string& val);
+
+    std::set<std::string> prompts;
+    std::map<std::string, std::string> sampling_settings;
+    std::set<std::string> assets;
+};
