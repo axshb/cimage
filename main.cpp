@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
             if (null_pos != std::string::npos) {
                 std::cout << "Found Metadata: " << content.substr(null_pos + 1) << std::endl;
             }
-
+            
         } else {
             // not the right chunk, go next (data length + 4 bytes of CRC jump)
             file.seekg(length + 4, std::ios::cur);

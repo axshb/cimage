@@ -14,10 +14,6 @@
         cmake
         pkg-config
       ];
-
-      shellHook = ''
-        export PKG_CONFIG_PATH=${pkgs.gtkmm3}/lib/pkgconfig:$PKG_CONFIG_PATH
-      '';
     };
   };
 }
