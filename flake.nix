@@ -13,7 +13,9 @@
         gcc
         cmake
         pkg-config
+        nlohmann_json
       ];
     };
   };
 }
+
