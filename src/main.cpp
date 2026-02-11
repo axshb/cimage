@@ -2,10 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include <algorithm>
 #include <cstdint>
-#include <set>
-#include <map>
 
 #include <nlohmann/json.hpp>
 #include "png_utils.hpp"
@@ -33,19 +30,19 @@ int main(int argc, char* argv[]) {
     }
 
     // skip the png signature (8 bytes)
-    file.seekg(8, std::ios::cur);
+    file.seekg(ByteLengths::LEN_PNG_SIGNATURE, std::ios::cur);
 
     while (file) {
         
         // get length of chunk
-        unsigned char len_buff[4];
-        if (!file.read((char*)len_buff, 4)) {
+        unsigned char len_buff[ByteLengths::LEN_CHUNK_PREFIX];
+        if (!file.read((char*)len_buff, ByteLengths::LEN_CHUNK_PREFIX)) {
             break;
         }
-        uint32_t length = png_utils::get_length(len_buff);
+        uint32_t length = ByteConversions::get_length(len_buff);
 
         // read type of chunk
-        char type_buf[5] = {0}; // all null because 4 chars + null terminator
+        char type_buf[ByteLengths::LEN_CHUNK_TYPE] = {0}; // all null because 4 chars + null terminator
         file.read(type_buf, 4);
         std::string type = type_buf;
 
@@ -72,7 +69,7 @@ int main(int argc, char* argv[]) {
             
         } else {
             // not the right chunk, go next (data length + 4 bytes of CRC jump)
-            file.seekg(length + 4, std::ios::cur);
+            file.seekg(length + ByteLengths::LEN_CRC, std::ios::cur);
         }
     }
     return 0;

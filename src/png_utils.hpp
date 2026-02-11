@@ -1,14 +1,14 @@
 #pragma once
 
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include <algorithm>
 #include <cstdint>
-#include <set>
-#include <map>
 
-namespace png_utils {
+namespace ByteConversions {
     uint32_t get_length(const unsigned char* b);
+}
+
+namespace ByteLengths{
+    constexpr int LEN_PNG_SIGNATURE = 8;
+    constexpr int LEN_CHUNK_PREFIX = 4;
+    constexpr int LEN_CHUNK_TYPE = 5;
+    constexpr int LEN_CRC = 4;
 }

@@ -1,18 +1,11 @@
 #include "png_utils.hpp"
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include <algorithm>
 #include <cstdint>
-#include <set>
-#include <map>
 
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 
-namespace png_utils {
+namespace ByteConversions{
 
     /* 
     Helper from @mrousavy
@@ -24,3 +17,4 @@ namespace png_utils {
         return (uint32_t)b[0] << 24 | (uint32_t)b[1] << 16 | (uint32_t)b[2] << 8 | (uint32_t)b[3];
     }
 }
+
