@@ -1,5 +1,23 @@
 <h1 align="center">cimage</h1><p align="center">A CLI tool to quickly view ComfyUI image generation metadata.</p>
 
+### Building
+
+1. Create a build directory: `mkdir build && cd build`
+2. Configure: `cmake ..`
+3. Compile: `make`
+
+This will produce two binaries: `cimage` (the app) and `unit_tests`.
+
+### Usage
+
+Run cimage:
+`./cimage path/to/your/image.png`
+
+Run tests:
+`./unit_tests`
+
+---
+
 ### ComfyUI Image Data
 
 ComfyUI stores image metadata in PNG Chunks (see below). The tEXt chunk presents itself as a A Directed Acyclic Graph (DAG) of nodes. Unfortunately, as ComfyUI's node-based approach allows for a lot of flexibility for users, as well as custom nodes, a typical reversed-DFS from a starting (sink) node is often not feasible to extract metadata. This tool explores how this data might be processed for specific use cases. 
@@ -35,22 +53,8 @@ To handle the structural limitations of the input JSON data, the extractor itera
 - Sampling Parameters: We target specific keys that are ubiquitous across sampler nodes, such as `cfg`, `steps`, `sampler_name`, and `denoise`.
 
 
-File Logic & Execution Flow
+### File Logic & Execution Flow
 
 - Jump Logic: `main.cpp` uses `seekg` to leapfrog over the PNG. It reads the 4-byte length, checks the type, and if it isn't `tEXt`, it skips `length + 4 bytes` (jumping the data and the CRC) to hit the next header immediately.
 
 - Metadata Extraction: Once a `tEXt` chunk with the key prompt is found, the raw JSON is handed to `ComfyMetadataExtractor::extract_metadata`.
-
-### Building
-1. Create a build directory: `mkdir build && cd build`
-2. Configure: `cmake ..`
-3. Compile: `make`
-
-This will produce two binaries: `cimage` (the app) and `unit_tests`.
-
-### Usage
-Run cimage:
-`./cimage path/to/your/image.png`
-
-Run tests:
-`./unit_tests`

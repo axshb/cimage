@@ -24,7 +24,7 @@ void ComfyMetadataExtractor::crawl_prompts(const std::string& k, const std::stri
                     val.find(".json") != std::string::npos ||
                     val.find("Select") != std::string::npos);
 
-    // heuristic; these criteria likely make it a prompt
+    // heuristic; these criteriastd::string key_lower = k; likely make it a prompt
     bool has_commas = (val.find(",") != std::string::npos);
     bool is_prompt_key = (key_lower == "text" || key_lower.find("part") != std::string::npos || key_lower == "value");
 
