@@ -8,6 +8,8 @@
 
 This will produce two binaries: `cimage` (the app) and `unit_tests`.
 
+Note: NixOS is also supported. Run `nix develop` in the project folder before doing the steps above.
+
 ### Usage
 
 Run cimage:
