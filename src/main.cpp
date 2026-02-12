@@ -9,6 +9,7 @@
 #include "comfy_utils.hpp"
 
 using json = nlohmann::json;
+using Comfy::Utils::ComfyMetadataExtractor;
 
 /*
 Notes:

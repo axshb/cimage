@@ -8,6 +8,7 @@
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
+using Comfy::Utils::ComfyMetadataExtractor;
 
 /*
 Helper function to get prompts
