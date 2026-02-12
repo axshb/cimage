@@ -14,7 +14,6 @@
         cmake
         pkg-config
         nlohmann_json
-        catch2_3
       ];
     };
   };
