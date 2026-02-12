@@ -4,6 +4,8 @@
 #include <set>
 #include <map>
 
+#include <nlohmann/json.hpp>
+
 namespace Comfy {
 
 namespace Utils {
@@ -21,6 +23,7 @@ private:
     std::set<std::string> prompts;
     std::map<std::string, std::string> sampling_settings;
     std::set<std::string> assets;
+    void process_node(nlohmann::json& node_inputs);
 };
 
 } // namespace Utils

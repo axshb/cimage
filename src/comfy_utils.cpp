@@ -2,22 +2,21 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
-#include <set>
-#include <map>
-
+#include <unordered_set>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 using Comfy::Utils::ComfyMetadataExtractor;
 
 /*
-Helper function to get prompts
+Predicting whether a string is a prompt using the following criteria:
+Has commas, is paired with certain keys, and is over a certain length. 
 */
 void ComfyMetadataExtractor::crawl_prompts(const std::string& k, const std::string& val) {
     std::string key_lower = k;
     std::transform(key_lower.begin(), key_lower.end(), key_lower.begin(), ::tolower);
 
-    // blacklist
+    // blacklisted terms associated with ui instructions/files
     bool is_file = (val.find(".pt") != std::string::npos || 
                     val.find(".pth") != std::string::npos || 
                     val.find(".jpeg") != std::string::npos ||
@@ -36,7 +35,41 @@ void ComfyMetadataExtractor::crawl_prompts(const std::string& k, const std::stri
 }
 
 /*
-Extracting ComfyUI's JSON DAG metadata
+Processes a singular node by crawling for
+prompts, checkpoints, loras, and generation parameters
+*/
+void ComfyMetadataExtractor::process_node(json& node_inputs) {
+    
+    for (auto& [k, v] : node_inputs.items()) {
+        // prompt crawling
+        if (v.is_string()) {
+            crawl_prompts(k, v.get<std::string>());
+        }
+
+        // crawl for checkpoints and loras
+        if (k.find("ckpt_name") != std::string::npos || k.find("lora") != std::string::npos || 
+        (v.is_string() && v.get<std::string>().find(".safetensors") != std::string::npos)) {
+            assets.insert(v.is_string() ? v.get<std::string>() : v.dump());
+        }
+
+        // crawl for sampling params
+        std::unordered_set<std::string> conditional = { "cfg", "steps", "steps_total", "sampler_name", "scheduler", "denoise" };
+        if (conditional.find(k) != conditional.end()) {
+            if (!v.is_array()) { // Only take the raw value from the source config
+                sampling_settings[k] = v.dump();
+            }
+        }
+    
+        // seeds
+        if (k == "seed" || k == "noise_seed") {
+            if (!v.is_array()) sampling_settings["seed"] = v.dump();
+        }
+    }
+}
+
+/*
+Extracting metadata by iterating over nodes in the raw json, then
+sending them to helper functions for processing.
 */
 void ComfyMetadataExtractor::extract_metadata(const std::string& raw_json) {
     try {
@@ -47,33 +80,8 @@ void ComfyMetadataExtractor::extract_metadata(const std::string& raw_json) {
         sampling_settings.clear();
         assets.clear();
 
-        for (auto& [id, node] : data.items()) {
-            auto& inputs = node["inputs"];
-
-            for (auto& [k, v] : inputs.items()) {
-                // prompt crawling
-                if (v.is_string()) {
-                    crawl_prompts(k, v.get<std::string>());
-                }
-
-                // crawl for checkpoints and loras
-                if (k.find("ckpt_name") != std::string::npos || k.find("lora") != std::string::npos || 
-                (v.is_string() && v.get<std::string>().find(".safetensors") != std::string::npos)) {
-                    assets.insert(v.is_string() ? v.get<std::string>() : v.dump());
-                }
-
-                // crawl for sampling params
-                if (k == "cfg" || k == "steps" || k == "steps_total" || k == "sampler_name" || k == "scheduler" || k == "denoise") {
-                    if (!v.is_array()) { // Only take the raw value from the source config
-                        sampling_settings[k] = v.dump();
-                    }
-                }
-                
-                // seeds
-                if (k == "seed" || k == "noise_seed") {
-                    if (!v.is_array()) sampling_settings["seed"] = v.dump();
-                }
-            }
+        for (auto& [id, node] : data.items()) { 
+            process_node(node["inputs"]);
         }
 
         std::cout << "\n>>> IMAGE GENERATION SUMMARY <<<\n";
